@@ -1,0 +1,43 @@
+ -Iexternal/glad/include para incluir en el Mf  
+
+ ⚙️ Debug / Desarrollo
+
+GL_KHR_debug → callbacks de errores y warnings del driver
+
+GL_ARB_debug_output → versión anterior (compatibilidad)
+
+🎨 Texturas / Calidad visual
+
+GL_EXT_texture_filter_anisotropic → filtrado anisotrópico (texturas más nítidas)
+
+GL_ARB_texture_compression → compresión (DXT/S3TC)
+
+GL_ARB_texture_float → texturas HDR / de coma flotante
+
+🧱 Framebuffers / Postprocesado
+
+GL_ARB_framebuffer_object → render a texturas (base de FBOs)
+
+GL_ARB_texture_multisample → antialiasing real (MSAA)
+
+🚀 Shaders / Performance
+
+GL_ARB_instanced_arrays → instancing (dibujar miles de objetos iguales)
+
+GL_ARB_uniform_buffer_object → compartir datos entre shaders
+
+GL_ARB_separate_shader_objects → combinar shaders sin re-linkear
+
+🧮 Cómputo / GPU moderna
+
+GL_ARB_compute_shader → cómputo general (OpenGL tipo CUDA)
+
+GL_ARB_shader_storage_buffer_object → buffers masivos compartidos
+
+🌊 Geom / Tessellation / Efectos
+
+GL_ARB_geometry_shader4 → genera vértices dinámicamente
+
+GL_ARB_tessellation_shader → subdivisión de mallas (agua, terreno)
+
+GL_ARB_shader_subroutine → funciones intercambiables dentro del shader
