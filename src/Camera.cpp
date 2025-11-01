@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <iostream>
+#include "Time.h"
 
 Camera::Camera(glm::vec3 startPos)
     : position(startPos),
@@ -15,13 +16,14 @@ Camera::Camera(glm::vec3 startPos)
     updateVectors();
 }
 
-void Camera::update(float deltaTime) {
+void Camera::update() {
 
     // --- Si está en modo UI, no mover cámara ---
     if (uiMode) return;
 
+    
     // --- Movimiento con WASD ---
-    float velocity = speed * deltaTime;
+    float velocity = speed * Time::deltaTime();
     if (Input::isKeyPressed(GLFW_KEY_W, true))
         position += front * velocity;
     if (Input::isKeyPressed(GLFW_KEY_S, true))

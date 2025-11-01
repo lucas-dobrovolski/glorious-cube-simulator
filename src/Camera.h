@@ -21,7 +21,7 @@ public:
 
     Camera(glm::vec3 startPos = glm::vec3(0.0f, 0.0f, 3.0f));
 
-    void update(float deltaTime);
+    void update();
     glm::mat4 getViewMatrix() const;
 
 private:
