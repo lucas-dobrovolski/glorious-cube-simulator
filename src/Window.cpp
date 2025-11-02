@@ -56,9 +56,9 @@
         glfwPollEvents();
     }
 
-    void Window::clear(float r, float g, float b) {
+    void Window::clear(glm::vec3 rgb) {
         // Limpia la pantalla con color de fondo
-        glClearColor(r, g, b, 1.0f);
+        glClearColor(rgb.x, rgb.y, rgb.y, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 

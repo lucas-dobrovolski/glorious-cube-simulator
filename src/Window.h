@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 #include <string>
-
+#include <glm/glm.hpp>
 class Window {
 private:
 GLFWwindow* window;       // puntero a la ventana GLFW
@@ -31,7 +31,7 @@ public:
 
 
     // Limpia la pantalla con color de fondo
-    void clear(float r=0.1f, float g=0.1f, float b=0.1f);
+    void clear(glm::vec3);
 
     // Getter del puntero GLFWwindow
     GLFWwindow* getGLFWwindow() const { return window; }

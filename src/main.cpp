@@ -20,14 +20,23 @@
 #include "Camera.h"
 #include "Time.h"
 
+using dot3 = glm::vec3;
+
 const float PI = 3.14159265f;
+
+const glm::vec3 camera_r0 = glm::vec3(0.0f, 1.0f, 2.0f);
+const glm::vec3 rgb0 = glm::vec3(0.7f, 0.7f, 0.7f);
+
+void world0(){
+
+
+
+}
 
 int main() {
 
             // =====  glfw  =====
-    int startWidth = 800;
-    int startHeight = 600; 
-    Window window1(startWidth, startHeight, "Motor 3D - Ventana básica");
+    Window window1(800, 600, "gcs");
     
             // =====  glad  =====    
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -41,17 +50,18 @@ int main() {
     ImGuiIO& io = ImGui::GetIO();
     Input::setImGuiIO(&io);
     Shader shader("shaders/vertex.glsl","shaders/fragment.glsl");
-    Cube cube;
-    Camera camera(glm::vec3(0.0f, 1.0f, 2.0f)); // posición inicial
-
-    //glfwSetInputMode(window1.getGLFWwindow(), GLFW_CURSOR, GLFW_CURSOR_CAPTURED);
     
-    // =====  Tiempo  =====
+            // =====  Tiempo  =====
+    
     Time::init();
+    Cube cube;
+    Camera camera(camera_r0); // posición inicial
     
-    while(!window1.shouldClose()) {    // ===============  LOOP  ====================
+    // ===============  LOOP  ====================
+
+    while(!window1.shouldClose()) { 
                 
-        window1.clear(0.7f, 0.7f, 0.7f); // R G B 
+        window1.clear(rgb0); // R G B 
         
         Time::update();
         float t = Time::timeSinceStart();        
