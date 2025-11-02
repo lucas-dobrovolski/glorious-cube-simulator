@@ -3,6 +3,8 @@
 #include <GLFW/glfw3.h>
 #include <string>
 #include <glm/glm.hpp>
+#include "Camera.h"
+
 class Window {
 private:
 GLFWwindow* window;       // puntero a la ventana GLFW

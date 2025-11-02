@@ -11,7 +11,11 @@ Camera::Camera(glm::vec3 startPos)
       phi(-90.0f),
       theta(0.0f),
       speed(5.0f),
-      sensitivity(0.1f)
+      sensitivity(0.1f),
+      aspect(1.0f),
+      farPlane(500.0f),
+      nearPlane(0.001f),
+      fov(80.0f)
 {
     updateVectors();
 }
@@ -59,4 +63,16 @@ void Camera::updateVectors() {
 
 glm::mat4 Camera::getViewMatrix() const {
     return glm::lookAt(position, position + front, up);
+}   
+
+glm::mat4  Camera::getProjectionMatrix() const {
+    return glm::perspective(glm::radians(fov), aspect, nearPlane, farPlane);
 }
+
+void Camera::setAspectFromFramebuffer(GLFWwindow* window) {
+    int fbWidth, fbHeight;
+    glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+    aspect = static_cast<float>(fbWidth) / static_cast<float>(fbHeight);
+}
+
+

@@ -25,10 +25,12 @@
 
         glfwMakeContextCurrent(window);
 
+
         glfwSetFramebufferSizeCallback(window, [](GLFWwindow* w, int newWidth, int newHeight) {
-            // Callback de redimensionamiento
+
             glViewport(0, 0, newWidth, newHeight);
         });
+
 
         setVSync(vsyncEnabled);
 

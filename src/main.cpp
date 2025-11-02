@@ -19,99 +19,88 @@
 #include "Input.h"
 #include "Camera.h"
 #include "Time.h"
+#include "Interactor.h"
 
-using dot3 = glm::vec3;
-
-const float PI = 3.14159265f;
+const float fPI = 3.14159265f;
+const long double lPI = 3.141592653589793238462643383279L;
 
 const glm::vec3 camera_r0 = glm::vec3(0.0f, 1.0f, 2.0f);
 const glm::vec3 rgb0 = glm::vec3(0.7f, 0.7f, 0.7f);
 
 void world0(){
 
-
-
 }
 
 int main() {
-
-            // =====  glfw  =====
+    
+    // =====  glfw  =====
     Window window1(800, 600, "gcs");
     
-            // =====  glad  =====    
+    // =====  glad  =====    
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
     
-            // =====  clases  =====  
+    // =====  clases  =====  
     Input::init(window1.getGLFWwindow());
     UI ui(window1); // Inicializar ImGui
     ImGuiIO& io = ImGui::GetIO();
     Input::setImGuiIO(&io);
     Shader shader("shaders/vertex.glsl","shaders/fragment.glsl");
     
-            // =====  Tiempo  =====
+    // =====  Tiempo  =====
     
     Time::init();
-    Cube cube;
     Camera camera(camera_r0); // posición inicial
+    Cube cube;
     
-    // ===============  LOOP  ====================
 
+    // Luego seteas el callback de resize en main
+    glfwSetWindowUserPointer(window1.getGLFWwindow(), &camera);
+    glfwSetFramebufferSizeCallback(window1.getGLFWwindow(), [](GLFWwindow* w, int width, int height){
+        Camera* cam = static_cast<Camera*>(glfwGetWindowUserPointer(w));
+        cam->setAspectFromFramebuffer(w);
+        glViewport(0, 0, width, height);
+    });
+    // ===============  LOOP  ====================
+    
     while(!window1.shouldClose()) { 
-                
-        window1.clear(rgb0); // R G B 
+        
+        
+        Input::update();
+        Interactor::handle(window1.getGLFWwindow(),ui, camera);
         
         Time::update();
+        
+        window1.clear(rgb0); // R G B 
+
+
+        // =====================================
         float t = Time::timeSinceStart();        
 
         shader.use();
         
-        float x = 1.0f * sin(0.5f * PI * t);
-        float y = 1.0f * sin(0.5f * PI * t + PI/2);
+        float x = 1.0f * sin(0.5f * fPI * t);
+        float y = 1.0f * sin(0.5f * fPI * t + fPI/2);
         float angle = t * glm::radians(10.0f);
-        
-        int fbWidth, fbHeight;
-        glfwGetFramebufferSize(window1.getGLFWwindow(), &fbWidth, &fbHeight);
-        float aspect = float(fbWidth) / float(fbHeight);
         
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::rotate(model, angle, glm::vec3(0.5f, x, y));
         model = glm::translate(model, glm::vec3(x, y, -2.0f));  // mover cubo
         camera.update();
-        glm::mat4 view = camera.getViewMatrix();
-        glm::mat4 projection = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 100.0f);
-        //                                               fov         ratio   near    far
         
         shader.setMat4("model", model);
-        shader.setMat4("view", view);
-        shader.setMat4("projection", projection);
+        shader.setMat4("view", camera.getViewMatrix());
+        shader.setMat4("projection", camera.getProjectionMatrix());
         
         cube.draw();
+        // =====================================
 
         ui.beginFrame();
         ui.show_info(window1);
         ui.render();
-        
-        Input::update();
 
-        if (Input::isKeyPressed(GLFW_KEY_ESCAPE)){
-            glfwSetWindowShouldClose(window1.getGLFWwindow(), true);
-        }
-
-        if (Input::isKeyJustPressed(GLFW_KEY_I, true)) {  // true = ignorar ImGui
-            ui.toggleInfoWindow();
-            camera.uiMode = !camera.uiMode;
-            
-            // Cambiar cursor inmediatamente
-            if (camera.uiMode) {
-                glfwSetInputMode(window1.getGLFWwindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-            } else {
-                glfwSetInputMode(window1.getGLFWwindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-                Input::resetFirstMouse();  // Reset para evitar saltos en la cámara
-            }
-        }
         
         window1.swapBuffers();
         window1.pollEvents();

@@ -22,7 +22,8 @@ SRC = src/main.cpp \
 	  src/UI.cpp \
       src/Input.cpp \
       src/Camera.cpp \
-      src/Time.cpp
+      src/Time.cpp \
+      src/Interactor.cpp
 
 TARGET = Motor3D
 
