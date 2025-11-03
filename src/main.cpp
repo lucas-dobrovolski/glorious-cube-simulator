@@ -20,6 +20,8 @@
 #include "Camera.h"
 #include "Time.h"
 #include "Interactor.h"
+#include "ObjX.h"
+#include "World.h"
 
 const float fPI = 3.14159265f;
 const long double lPI = 3.141592653589793238462643383279L;
@@ -54,7 +56,7 @@ int main() {
     Time::init();
     Camera camera(camera_r0); // posición inicial
     Cube cube;
-    
+    World W;
 
     // Luego seteas el callback de resize en main
     glfwSetWindowUserPointer(window1.getGLFWwindow(), &camera);
@@ -63,6 +65,21 @@ int main() {
         cam->setAspectFromFramebuffer(w);
         glViewport(0, 0, width, height);
     });
+    
+    
+    
+    Cube* cube1 = new Cube();
+    cube1->position = glm::vec3(1.0f, 0.0f, -2.0f);
+    cube1->rotation = glm::vec3(0.0f, glm::radians(45.0f), 0.0f);
+    cube1->scale = glm::vec3(1.0f);
+    W.cubes.push_back(cube1);
+
+    Cube* cube2 = new Cube();
+    cube2->position = glm::vec3(-1.0f, 0.0f, -2.0f);
+    cube2->rotation = glm::vec3(0.0f, glm::radians(45.0f), 0.0f);
+    cube2->scale = glm::vec3(1.0f);
+    W.cubes.push_back(cube2);
+    
     // ===============  LOOP  ====================
     
     while(!window1.shouldClose()) { 
@@ -95,6 +112,15 @@ int main() {
         shader.setMat4("projection", camera.getProjectionMatrix());
         
         cube.draw();
+
+        for(auto obj : W.cubes) {
+            shader.use();
+            shader.setMat4("model", obj->getModelMatrix());
+            shader.setMat4("view", camera.getViewMatrix());
+            shader.setMat4("projection", camera.getProjectionMatrix());
+            obj->draw();
+        }
+
         // =====================================
 
         ui.beginFrame();

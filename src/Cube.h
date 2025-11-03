@@ -1,7 +1,8 @@
 #pragma once
 #include <glad/glad.h>
+#include "ObjX.h"
 
-class Cube {
+class Cube : public ObjX {
 private:
     unsigned int VAO, VBO;
 
