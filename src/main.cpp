@@ -22,16 +22,13 @@
 #include "Interactor.h"
 #include "ObjX.h"
 #include "World.h"
+#include "Phys.h"
 
 const float fPI = 3.14159265f;
 const long double lPI = 3.141592653589793238462643383279L;
 
 const glm::vec3 camera_r0 = glm::vec3(0.0f, 1.0f, 2.0f);
 const glm::vec3 rgb0 = glm::vec3(0.7f, 0.7f, 0.7f);
-
-void world0(){
-
-}
 
 int main() {
     
@@ -56,9 +53,9 @@ int main() {
     Time::init();
     Camera camera(camera_r0); // posición inicial
     Cube cube;
-    World W;
+    World w;
 
-    // Luego seteas el callback de resize en main
+    // =====  Callback para redimensionalizar  =====
     glfwSetWindowUserPointer(window1.getGLFWwindow(), &camera);
     glfwSetFramebufferSizeCallback(window1.getGLFWwindow(), [](GLFWwindow* w, int width, int height){
         Camera* cam = static_cast<Camera*>(glfwGetWindowUserPointer(w));
@@ -66,68 +63,46 @@ int main() {
         glViewport(0, 0, width, height);
     });
     
-    
-    
+    // =====  Vector de cubos  =====
     Cube* cube1 = new Cube();
-    cube1->position = glm::vec3(1.0f, 0.0f, -2.0f);
+    cube1->position = glm::vec3(1.0f, 3.0f, 0.0f);
     cube1->rotation = glm::vec3(0.0f, glm::radians(45.0f), 0.0f);
     cube1->scale = glm::vec3(1.0f);
-    W.cubes.push_back(cube1);
+    w.cubes.push_back(cube1);
 
     Cube* cube2 = new Cube();
     cube2->position = glm::vec3(-1.0f, 0.0f, -2.0f);
     cube2->rotation = glm::vec3(0.0f, glm::radians(45.0f), 0.0f);
     cube2->scale = glm::vec3(1.0f);
-    W.cubes.push_back(cube2);
+    w.cubes.push_back(cube2);
     
     // ===============  LOOP  ====================
     
     while(!window1.shouldClose()) { 
         
-        
+        // =====  Handle input  =====
         Input::update();
         Interactor::handle(window1.getGLFWwindow(),ui, camera);
         
+        // =====  Tiempo  =====
         Time::update();
-        
-        window1.clear(rgb0); // R G B 
+        window1.clear(rgb0); // R G B   
 
+        shader.use(); // =====  Set shader  =====
 
-        // =====================================
-        float t = Time::timeSinceStart();        
+        // =====  Protocolo  =====
+        Phys::oscillate(*cube1, glm::vec3(1.0,0.7,0.2), glm::vec3(1.0,3.0,1.0) , glm::vec3(0.0, glm::radians(10.0f), 0.0) );          // se mueve en círculo
 
-        shader.use();
-        
-        float x = 1.0f * sin(0.5f * fPI * t);
-        float y = 1.0f * sin(0.5f * fPI * t + fPI/2);
-        float angle = t * glm::radians(10.0f);
-        
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, angle, glm::vec3(0.5f, x, y));
-        model = glm::translate(model, glm::vec3(x, y, -2.0f));  // mover cubo
+        // =====  Render  =====
         camera.update();
-        
-        shader.setMat4("model", model);
-        shader.setMat4("view", camera.getViewMatrix());
-        shader.setMat4("projection", camera.getProjectionMatrix());
-        
-        cube.draw();
+        w.drawVectorCubes(w.cubes , shader, camera);
 
-        for(auto obj : W.cubes) {
-            shader.use();
-            shader.setMat4("model", obj->getModelMatrix());
-            shader.setMat4("view", camera.getViewMatrix());
-            shader.setMat4("projection", camera.getProjectionMatrix());
-            obj->draw();
-        }
-
-        // =====================================
-
+        // =====  UI  =====
         ui.beginFrame();
         ui.show_info(window1);
         ui.render();
 
-        
+        // =====  Window  =====
         window1.swapBuffers();
         window1.pollEvents();
         
